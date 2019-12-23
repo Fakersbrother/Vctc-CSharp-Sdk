@@ -1,6 +1,6 @@
 using System;
 
-namespace Vctc_CSharp_Sdk
+namespace VctcNet.Sdk
 {
     public class VctcException : Exception
     {
@@ -8,7 +8,7 @@ namespace Vctc_CSharp_Sdk
         public string code;
         public string rawResponse;
         public string errorCode;
-        public VctcException(string message, string code):base(message)
+        public VctcException(string message, string code):base(code+":"+message)
         {
             this.message = message;
             this.code = code;
@@ -19,7 +19,7 @@ namespace Vctc_CSharp_Sdk
             this.errorCode = code;
         }
 
-        public new string ToString()
+        public override string ToString()
         {
             return code + ":" + message;
         }

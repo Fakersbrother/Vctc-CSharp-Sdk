@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Cobra.Utils;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using Vctc_CSharp_Sdk;
 using Vctc_CSharp_Sdk.Utils;
 
 namespace VctcNet.Sdk
@@ -15,7 +14,7 @@ namespace VctcNet.Sdk
      * Class VctcClient  for http request
      * @package Vastchain\VctcPhpSdk
      */
-    class VctcClient
+    public class VctcClient
     {
         private string apiPrefix = "https://v1.api.tc.vastchain.ltd";
         private string appId;
@@ -110,12 +109,17 @@ namespace VctcNet.Sdk
             cts.CancelAfter(TimeSpan.FromSeconds(3));
 
             var res = await _client.ExecuteTaskAsync(req, cts.Token);
-            var ret = JObject.Parse(res.Content);
-            if (ret.TryGetValue("error", out var err))
+            if (res.Content != "")
             {
-                var ex = new VctcException((string) ret["msg"], (string) ret["error"]);
-                ex.setRaw(res.Content, (string) ret["code"]);
-                throw ex;
+
+
+                var ret = JObject.Parse(res.Content);
+                if (ret.TryGetValue("error", out var err))
+                {
+                    var ex = new VctcException((string) ret["msg"], (string) ret["code"]);
+                    ex.setRaw(res.Content, (string) ret["code"]);
+                    throw ex;
+                }
             }
 
             return res.Content;
